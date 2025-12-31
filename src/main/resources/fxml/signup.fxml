@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="800.0" prefWidth="800.0" style="-fx-background-color: #fefefe;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.knowlwdgeflow.Controllers.signup_Controller">
+    <children>
+        <StackPane prefHeight="800.0" prefWidth="800.0" styleClass="signup-root" stylesheets="@../Styles/style.css">
+            <children>
+                <VBox alignment="CENTER" spacing="14.0">
+                    <children>
+                        <ImageView fitHeight="120.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../Images/knowledgeflowlogo.png" />
+                            </image>
+                        </ImageView>
+                        <Label styleClass="login-title" text="Create your account" />
+                        <TextField fx:id="nameField" promptText="Enter your name" styleClass="login-field" focusTraversable="false" />
+                        <TextField fx:id="emailField" promptText="Enter email" styleClass="login-field" focusTraversable="false" />
+                        <PasswordField fx:id="passwordField" promptText="Enter password" styleClass="login-field" focusTraversable="false" />
+                        <Button fx:id="signupButton" mnemonicParsing="false" styleClass="primary-button" text="Sign Up" />
+                        <Label fx:id="errorLabel" style="-fx-text-fill: #dc2626; -fx-font-size: 12px;" />
+                    </children>
+                    <padding>
+                        <Insets bottom="36.0" left="32.0" right="32.0" top="36.0" />
+                    </padding>
+                </VBox>
+            </children>
+        </StackPane>
+    </children>
+</AnchorPane>

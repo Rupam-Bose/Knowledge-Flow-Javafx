@@ -1,0 +1,72 @@
+.splash_screen{
+    -fx-background-color: #fefefe;
+}
+
+.welcome-root {
+    -fx-background-color: #fefefe;
+}
+
+.hero-title {
+    -fx-text-fill: #111827;
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+}
+
+.hero-subtitle {
+    -fx-text-fill: #374151;
+    -fx-font-size: 14px;
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+}
+
+.primary-button {
+    -fx-background-color: #2563eb;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+    -fx-padding: 10 18 10 18;
+}
+
+.primary-button:hover {
+    -fx-background-color: #1d4ed8;
+}
+
+.secondary-button {
+    -fx-background-color: #e5e7eb;
+    -fx-text-fill: #111827;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+    -fx-padding: 10 18 10 18;
+}
+
+.secondary-button:hover {
+    -fx-background-color: #d1d5db;
+}
+
+.login-root {
+    -fx-background-color: #fefefe;
+}
+
+.login-title {
+    -fx-text-fill: #111827;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+.login-subtext {
+    -fx-text-fill: #4b5563;
+    -fx-font-size: 13px;
+}
+
+.login-field {
+    -fx-pref-width: 240;
+    -fx-padding: 10 12 10 12;
+    -fx-background-radius: 8;
+    -fx-background-color: #f9fafb;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 8;
+}
+
+.signup-root {
+    -fx-background-color: #fefefe;
+}

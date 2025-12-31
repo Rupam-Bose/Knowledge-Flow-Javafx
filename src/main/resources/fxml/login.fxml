@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="800.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.knowlwdgeflow.Controllers.login_Controller">
+    <children>
+        <StackPane fx:id="rootPane" prefHeight="800.0" prefWidth="800.0" styleClass="login-root" stylesheets="@../Styles/style.css">
+            <children>
+                <VBox alignment="CENTER" spacing="14.0">
+                    <children>
+                        <ImageView fitHeight="120.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../Images/knowledgeflowlogo.png" />
+                            </image>
+                        </ImageView>
+                        <Label styleClass="login-title" text="Login to KnowledgeFlow" />
+                        <TextField fx:id="emailField" promptText="Enter email" styleClass="login-field" focusTraversable="false" />
+                        <PasswordField fx:id="passwordField" promptText="Enter password" styleClass="login-field" focusTraversable="false" />
+                        <Button fx:id="loginButton" mnemonicParsing="false" styleClass="primary-button" text="Login" />
+                        <Label fx:id="errorLabel" style="-fx-text-fill: #dc2626; -fx-font-size: 12px;" />
+                        <VBox alignment="CENTER" spacing="6.0">
+                            <children>
+                                <Label styleClass="login-subtext" text="Don't have an account?" />
+                                <Button fx:id="signupButton" mnemonicParsing="false" styleClass="secondary-button" text="Sign Up" />
+                            </children>
+                        </VBox>
+                    </children>
+                    <padding>
+                        <Insets bottom="36.0" left="32.0" right="32.0" top="36.0" />
+                    </padding>
+                </VBox>
+            </children>
+        </StackPane>
+    </children>
+</AnchorPane>
