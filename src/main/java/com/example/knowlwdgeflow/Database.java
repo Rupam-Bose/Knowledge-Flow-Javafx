@@ -41,12 +41,34 @@ public final class Database {
                             "name TEXT NOT NULL," +
                             "email TEXT NOT NULL UNIQUE," +
                             "password TEXT NOT NULL," +
+                            "profile_image BLOB," +
                             "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
                             ")");
                 }
+                ensureProfileImageColumn(conn);
             }
         } catch (Exception e) {
             throw new RuntimeException("Failed to initialize database: " + e.getMessage(), e);
+        }
+    }
+
+    private static void ensureProfileImageColumn(Connection conn) {
+        try (var stmt = conn.createStatement();
+             var rs = stmt.executeQuery("PRAGMA table_info(users)")) {
+            boolean hasColumn = false;
+            while (rs.next()) {
+                if ("profile_image".equalsIgnoreCase(rs.getString("name"))) {
+                    hasColumn = true;
+                    break;
+                }
+            }
+            if (!hasColumn) {
+                try (var alter = conn.createStatement()) {
+                    alter.executeUpdate("ALTER TABLE users ADD COLUMN profile_image BLOB");
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to migrate profile image column", e);
         }
     }
 }

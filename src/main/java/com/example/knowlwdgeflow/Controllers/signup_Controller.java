@@ -56,7 +56,7 @@ public class signup_Controller {
             stage.show();
         } catch (Exception ex) {
             ex.printStackTrace();
-            errorLabel.setText("Unable to load profile");
+            errorLabel.setText("Unable to load profile: " + ex.getMessage());
         }
     }
 }

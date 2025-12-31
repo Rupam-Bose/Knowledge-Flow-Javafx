@@ -5,6 +5,7 @@ import com.example.knowlwdgeflow.model.User;
 
 public class AuthService {
     private final UserDao userDao;
+    private final SessionService sessionService = new SessionService();
 
     public AuthService() {
         this.userDao = new UserDao();
@@ -17,7 +18,9 @@ public class AuthService {
         if (userDao.emailExists(email)) {
             throw new IllegalArgumentException("Email already exists");
         }
-        return userDao.insert(name.trim(), email.trim(), password);
+        User created = userDao.insert(name.trim(), email.trim(), password);
+        sessionService.saveUserId(created.getId());
+        return created;
     }
 
     public User login(String email, String password) throws Exception {
@@ -28,7 +31,15 @@ public class AuthService {
         if (user == null) {
             throw new IllegalArgumentException("Invalid credentials");
         }
+        sessionService.saveUserId(user.getId());
         return user;
     }
-}
 
+    public void updateProfileImage(int userId, byte[] imageBytes) throws Exception {
+        userDao.updateProfileImage(userId, imageBytes);
+    }
+
+    public void clearSession() {
+        sessionService.clear();
+    }
+}

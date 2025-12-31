@@ -15,6 +15,9 @@ module com.example.knowlwdgeflow {
     requires org.xerial.sqlitejdbc;
     requires org.slf4j;
     requires org.slf4j.simple;
+    requires javafx.swing;
+    requires java.desktop;
+    requires java.prefs;
 
     opens com.example.knowlwdgeflow to javafx.fxml;
     opens com.example.knowlwdgeflow.Controllers to javafx.fxml;

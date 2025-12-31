@@ -55,7 +55,11 @@ public class login_Controller {
 
     private void openMainProfile(User user) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/mainProfile.fxml"));
+            var fxml = getClass().getResource("/fxml/mainProfile.fxml");
+            if (fxml == null) {
+                throw new IllegalStateException("mainProfile.fxml not found on classpath");
+            }
+            FXMLLoader loader = new FXMLLoader(fxml);
             Parent root = loader.load();
             mainProfile_Controller controller = loader.getController();
             controller.setUser(user);
@@ -64,7 +68,7 @@ public class login_Controller {
             stage.show();
         } catch (Exception ex) {
             ex.printStackTrace();
-            errorLabel.setText("Unable to load profile");
+            errorLabel.setText("Unable to load profile: " + ex.getMessage());
         }
     }
 
