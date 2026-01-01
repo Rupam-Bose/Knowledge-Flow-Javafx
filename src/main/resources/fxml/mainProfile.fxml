@@ -25,7 +25,7 @@
                                 <Insets top="10.0" right="0.0" bottom="0.0" left="0.0" />
                             </padding>
                             <children>
-                                <Button text="Home" style="-fx-background-color: #2563eb; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 10 14;" />
+                                <Button fx:id="homeButton" text="Home" style="-fx-background-color: #2563eb; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 10 14;" />
                                 <Button text="Questions" style="-fx-background-color: #2563eb; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 10 14;" />
                                 <Button text="Bookmarks" style="-fx-background-color: #2563eb; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 10 14;" />
                                 <Button text="Writing Blog" style="-fx-background-color: #2563eb; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 10 14;" />

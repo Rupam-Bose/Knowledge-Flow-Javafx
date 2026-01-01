@@ -5,12 +5,16 @@ import com.example.knowlwdgeflow.service.AuthService;
 import com.example.knowlwdgeflow.service.SessionService;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
 import java.io.ByteArrayInputStream;
@@ -31,6 +35,8 @@ public class mainProfile_Controller {
     private Button uploadButton;
     @FXML
     private Button logoutButton;
+    @FXML
+    private Button homeButton;
 
     private User currentUser;
     private final AuthService authService = new AuthService();
@@ -47,6 +53,9 @@ public class mainProfile_Controller {
 
         if (logoutButton != null) {
             logoutButton.setOnAction(e -> handleLogout());
+        }
+        if (homeButton != null) {
+            homeButton.setOnAction(e -> handleHome());
         }
     }
 
@@ -113,6 +122,18 @@ public class mainProfile_Controller {
             javafx.scene.Parent root = loader.load();
             var stage = (javafx.stage.Stage) uploadButton.getScene().getWindow();
             stage.setScene(new javafx.scene.Scene(root));
+            stage.show();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void handleHome() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Home.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) homeButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
             stage.show();
         } catch (Exception ex) {
             ex.printStackTrace();

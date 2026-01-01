@@ -1,11 +1,124 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
 
 
-<AnchorPane prefHeight="800.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.knowlwdgeflow.Controllers.home_Controller">
+<AnchorPane prefHeight="800.0" prefWidth="800.0" style="-fx-background-color: #fefefe;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.knowlwdgeflow.Controllers.home_Controller">
    <children>
-      <HBox layoutX="25.0" layoutY="14.0" prefHeight="100.0" prefWidth="750.0" />
+      <VBox spacing="16.0" style="-fx-padding: 20;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox alignment="CENTER_LEFT" spacing="12.0">
+               <children>
+                  <Label text="Home" style="-fx-font-size: 26; -fx-font-weight: bold; -fx-text-fill: #1a1f2a;" />
+                  <Region HBox.hgrow="ALWAYS" />
+                  <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                     <children>
+                        <ImageView fx:id="profileImageView" fitHeight="44.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="false">
+                           <image>
+                              <Image url="@../Images/knowledgeflowlogo.png" />
+                           </image>
+                           <clip>
+                              <Circle fx:id="profileClip" centerX="22.0" centerY="22.0" radius="22.0" />
+                           </clip>
+                        </ImageView>
+                     </children>
+                  </HBox>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" spacing="8.0">
+               <children>
+                  <TextField focusTraversable="false" promptText="Search articles, topics, authors..." HBox.hgrow="ALWAYS" style="-fx-background-radius: 12; -fx-padding: 10 12; -fx-border-color: #e6e9ef; -fx-border-radius: 12;" />
+                  <Button mnemonicParsing="false" text="Search" style="-fx-background-color: #1f7aff; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 8 14;" />
+               </children>
+            </HBox>
+            <ListView fx:id="blogListView" focusTraversable="false" style="-fx-background-insets: 0; -fx-padding: 0;" VBox.vgrow="ALWAYS">
+               <placeholder>
+                  <Label text="No blogs yet" style="-fx-text-fill: #9aa2b1;" />
+               </placeholder>
+               <items>
+                  <FXCollections fx:factory="observableArrayList">
+                     <VBox spacing="8.0" style="-fx-background-color: #ffffff; -fx-background-radius: 12; -fx-padding: 14 16 14 16; -fx-border-color: #e6e9ef; -fx-border-radius: 12;">
+                        <children>
+                           <Label text="Sample Blog Title" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #222b3a;" />
+                           <HBox alignment="CENTER_LEFT" spacing="10.0">
+                              <children>
+                                 <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="false">
+                                    <image>
+                                       <Image url="@../Images/knowledgeflowlogo.png" />
+                                    </image>
+                                    <clip>
+                                       <Circle centerX="16.0" centerY="16.0" radius="16.0" />
+                                    </clip>
+                                 </ImageView>
+                                 <Label text="Alex Doe" style="-fx-text-fill: #566072;" />
+                                 <Label text="•" style="-fx-text-fill: #9aa2b1;" />
+                                 <Label text="Jan 1, 2026 10:30 AM" style="-fx-text-fill: #9aa2b1;" />
+                              </children>
+                           </HBox>
+                           <Label wrapText="true" text="Here goes the first few lines of the blog post to give readers a quick preview. Keep it short and engaging to invite them to read more..." style="-fx-text-fill: #444a59;" />
+                           <HBox alignment="CENTER_LEFT" spacing="12.0">
+                              <children>
+                                 <Button mnemonicParsing="false" text="Read more" style="-fx-background-color: #1f7aff; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 6 12;" />
+                                 <HBox alignment="CENTER_LEFT" spacing="6.0">
+                                    <children>
+                                       <Button mnemonicParsing="false" style="-fx-background-color: transparent; -fx-border-color: #d2d7e4; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 6 10;">
+                                          <graphic>
+                                             <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                                <image>
+                                                   <Image url="@../Images/heart_black.png" />
+                                                </image>
+                                             </ImageView>
+                                          </graphic>
+                                       </Button>
+                                       <Label text="12" style="-fx-text-fill: #566072;" />
+                                    </children>
+                                 </HBox>
+                                 <HBox alignment="CENTER_LEFT" spacing="6.0">
+                                    <children>
+                                       <Button mnemonicParsing="false" style="-fx-background-color: transparent; -fx-border-color: #d2d7e4; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 6 10;">
+                                          <graphic>
+                                             <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                                <image>
+                                                   <Image url="@../Images/comments.png" />
+                                                </image>
+                                             </ImageView>
+                                          </graphic>
+                                       </Button>
+                                       <Label text="5" style="-fx-text-fill: #566072;" />
+                                    </children>
+                                 </HBox>
+                                 <HBox alignment="CENTER_LEFT" spacing="6.0">
+                                    <children>
+                                       <Button mnemonicParsing="false" style="-fx-background-color: transparent; -fx-border-color: #d2d7e4; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 6 10;">
+                                          <graphic>
+                                             <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                                <image>
+                                                   <Image url="@../Images/bookmark_black.png" />
+                                                </image>
+                                             </ImageView>
+                                          </graphic>
+                                       </Button>
+                                    </children>
+                                 </HBox>
+                              </children>
+                           </HBox>
+                        </children>
+                     </VBox>
+                  </FXCollections>
+               </items>
+            </ListView>
+         </children>
+      </VBox>
    </children>
 </AnchorPane>
