@@ -44,6 +44,15 @@ public final class Database {
                             "profile_image BLOB," +
                             "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
                             ")");
+                    stmt.executeUpdate("CREATE TABLE IF NOT EXISTS blogs (" +
+                            "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                            "user_id INTEGER NOT NULL," +
+                            "title TEXT NOT NULL," +
+                            "content TEXT NOT NULL," +
+                            "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP," +
+                            "FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE" +
+                            ")");
+                    stmt.executeUpdate("CREATE INDEX IF NOT EXISTS idx_blogs_created_at ON blogs(created_at DESC)");
                 }
                 ensureProfileImageColumn(conn);
             }

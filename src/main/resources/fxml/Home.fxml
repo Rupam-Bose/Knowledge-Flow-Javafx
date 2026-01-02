@@ -42,81 +42,10 @@
                   <Button mnemonicParsing="false" text="Search" style="-fx-background-color: #1f7aff; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 8 14;" />
                </children>
             </HBox>
-            <ListView fx:id="blogListView" focusTraversable="false" style="-fx-background-insets: 0; -fx-padding: 0;" VBox.vgrow="ALWAYS">
+            <ListView fx:id="blogListView" focusTraversable="false" style="-fx-background-insets: 0; -fx-padding: 0;" VBox.vgrow="ALWAYS" prefHeight="800.0" prefWidth="800.0">
                <placeholder>
                   <Label text="No blogs yet" style="-fx-text-fill: #9aa2b1;" />
                </placeholder>
-               <items>
-                  <FXCollections fx:factory="observableArrayList">
-                     <VBox spacing="8.0" style="-fx-background-color: #ffffff; -fx-background-radius: 12; -fx-padding: 14 16 14 16; -fx-border-color: #e6e9ef; -fx-border-radius: 12;">
-                        <children>
-                           <Label text="Sample Blog Title" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #222b3a;" />
-                           <HBox alignment="CENTER_LEFT" spacing="10.0">
-                              <children>
-                                 <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="false">
-                                    <image>
-                                       <Image url="@../Images/knowledgeflowlogo.png" />
-                                    </image>
-                                    <clip>
-                                       <Circle centerX="16.0" centerY="16.0" radius="16.0" />
-                                    </clip>
-                                 </ImageView>
-                                 <Label text="Alex Doe" style="-fx-text-fill: #566072;" />
-                                 <Label text="•" style="-fx-text-fill: #9aa2b1;" />
-                                 <Label text="Jan 1, 2026 10:30 AM" style="-fx-text-fill: #9aa2b1;" />
-                              </children>
-                           </HBox>
-                           <Label wrapText="true" text="Here goes the first few lines of the blog post to give readers a quick preview. Keep it short and engaging to invite them to read more..." style="-fx-text-fill: #444a59;" />
-                           <HBox alignment="CENTER_LEFT" spacing="12.0">
-                              <children>
-                                 <Button mnemonicParsing="false" text="Read more" style="-fx-background-color: #1f7aff; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 6 12;" />
-                                 <HBox alignment="CENTER_LEFT" spacing="6.0">
-                                    <children>
-                                       <Button mnemonicParsing="false" style="-fx-background-color: transparent; -fx-border-color: #d2d7e4; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 6 10;">
-                                          <graphic>
-                                             <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                                                <image>
-                                                   <Image url="@../Images/heart_black.png" />
-                                                </image>
-                                             </ImageView>
-                                          </graphic>
-                                       </Button>
-                                       <Label text="12" style="-fx-text-fill: #566072;" />
-                                    </children>
-                                 </HBox>
-                                 <HBox alignment="CENTER_LEFT" spacing="6.0">
-                                    <children>
-                                       <Button mnemonicParsing="false" style="-fx-background-color: transparent; -fx-border-color: #d2d7e4; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 6 10;">
-                                          <graphic>
-                                             <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                                                <image>
-                                                   <Image url="@../Images/comments.png" />
-                                                </image>
-                                             </ImageView>
-                                          </graphic>
-                                       </Button>
-                                       <Label text="5" style="-fx-text-fill: #566072;" />
-                                    </children>
-                                 </HBox>
-                                 <HBox alignment="CENTER_LEFT" spacing="6.0">
-                                    <children>
-                                       <Button mnemonicParsing="false" style="-fx-background-color: transparent; -fx-border-color: #d2d7e4; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 6 10;">
-                                          <graphic>
-                                             <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                                                <image>
-                                                   <Image url="@../Images/bookmark_black.png" />
-                                                </image>
-                                             </ImageView>
-                                          </graphic>
-                                       </Button>
-                                    </children>
-                                 </HBox>
-                              </children>
-                           </HBox>
-                        </children>
-                     </VBox>
-                  </FXCollections>
-               </items>
             </ListView>
          </children>
       </VBox>

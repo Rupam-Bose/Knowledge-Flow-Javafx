@@ -70,3 +70,15 @@
 .signup-root {
     -fx-background-color: #fefefe;
 }
+
+/* Prevent horizontal scroll bar and allow content to wrap within cells */
+.no-horizontal-scroll .scroll-bar:horizontal {
+    -fx-opacity: 0;
+    -fx-max-height: 0;
+    -fx-min-height: 0;
+    -fx-pref-height: 0;
+}
+
+.no-horizontal-scroll .list-cell {
+    -fx-wrap-text: true;
+}

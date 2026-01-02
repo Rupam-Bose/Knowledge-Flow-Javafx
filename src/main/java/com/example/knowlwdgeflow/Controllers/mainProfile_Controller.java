@@ -37,6 +37,8 @@ public class mainProfile_Controller {
     private Button logoutButton;
     @FXML
     private Button homeButton;
+    @FXML
+    private Button writingBlogButton;
 
     private User currentUser;
     private final AuthService authService = new AuthService();
@@ -56,6 +58,9 @@ public class mainProfile_Controller {
         }
         if (homeButton != null) {
             homeButton.setOnAction(e -> handleHome());
+        }
+        if (writingBlogButton != null) {
+            writingBlogButton.setOnAction(e -> handleWritingBlog());
         }
     }
 
@@ -133,6 +138,20 @@ public class mainProfile_Controller {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Home.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) homeButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void handleWritingBlog() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/writingBlog.fxml"));
+            Parent root = loader.load();
+            writingBlog_Controller controller = loader.getController();
+            controller.setUser(currentUser);
+            Stage stage = (Stage) writingBlogButton.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
         } catch (Exception ex) {
