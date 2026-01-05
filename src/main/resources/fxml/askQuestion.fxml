@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+
+<AnchorPane fx:id="rootPane" prefHeight="700.0" prefWidth="800.0" style="-fx-background-color: #fefefe;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.knowlwdgeflow.Controllers.askQuestion_Controller">
+    <fx:define>
+        <Circle fx:id="profileClip" radius="24.0" />
+    </fx:define>
+    <children>
+        <VBox spacing="24.0" AnchorPane.bottomAnchor="24.0" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="24.0">
+            <children>
+                <HBox alignment="CENTER_LEFT" spacing="12.0">
+                    <children>
+                        <Label style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #0f172a;" text="Ask Question" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <AnchorPane prefHeight="48.0" prefWidth="48.0">
+                            <children>
+                                <ImageView fx:id="profileImageView" fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true" smooth="true" onMouseClicked="#handleProfileClick" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                            </children>
+                        </AnchorPane>
+                    </children>
+                </HBox>
+                <HBox alignment="CENTER">
+                    <children>
+                        <ImageView fx:id="questionImageView" fitHeight="260.0" fitWidth="583.0" pickOnBounds="true" preserveRatio="true" smooth="true" />
+                    </children>
+                </HBox>
+                <VBox spacing="12.0" style="-fx-background-color: #ffffff; -fx-background-radius: 12; -fx-padding: 20 20 24 20; -fx-effect: dropshadow(gaussian, rgba(15,23,42,0.06), 10, 0, 0, 4);">
+                    <children>
+                        <Label style="-fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: #1f2937;" text="Your question" />
+                        <TextField fx:id="questionField" promptText="Type your question here" focusTraversable="false" />
+                        <Button fx:id="askNowButton" mnemonicParsing="false" style="-fx-background-color: #2563eb; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 10 14;" text="Ask now" />
+                    </children>
+                </VBox>
+            </children>
+            <padding>
+                <Insets top="4.0" />
+            </padding>
+        </VBox>
+    </children>
+</AnchorPane>

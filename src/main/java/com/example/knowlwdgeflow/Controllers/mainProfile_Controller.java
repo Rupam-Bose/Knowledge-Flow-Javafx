@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -39,6 +40,10 @@ public class mainProfile_Controller {
     private Button homeButton;
     @FXML
     private Button writingBlogButton;
+    @FXML
+    private Button askQuestionButton;
+    @FXML
+    private Button questionsButton;
 
     private User currentUser;
     private final AuthService authService = new AuthService();
@@ -61,6 +66,12 @@ public class mainProfile_Controller {
         }
         if (writingBlogButton != null) {
             writingBlogButton.setOnAction(e -> handleWritingBlog());
+        }
+        if (askQuestionButton != null) {
+            askQuestionButton.setOnAction(e -> handleAskQuestion());
+        }
+        if (questionsButton != null) {
+            questionsButton.setOnAction(e -> handleAllQuestions());
         }
     }
 
@@ -152,6 +163,43 @@ public class mainProfile_Controller {
             writingBlog_Controller controller = loader.getController();
             controller.setUser(currentUser);
             Stage stage = (Stage) writingBlogButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void handleAskQuestion() {
+        try {
+            var fxmlUrl = getClass().getResource("/fxml/askQuestion.fxml");
+            if (fxmlUrl == null) {
+                throw new IllegalStateException("askQuestion.fxml not found on classpath");
+            }
+            FXMLLoader loader = new FXMLLoader(fxmlUrl);
+            Parent root = loader.load();
+            askQuestion_Controller controller = loader.getController();
+            controller.setUser(currentUser);
+            Stage stage = (Stage) askQuestionButton.getScene().getWindow();
+            if (stage == null) {
+                throw new IllegalStateException("Stage not available for askQuestionButton");
+            }
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to open Ask Question screen: " + ex.getMessage());
+            alert.showAndWait();
+        }
+    }
+
+    private void handleAllQuestions() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/allQuestions.fxml"));
+            Parent root = loader.load();
+            allQuestions_Controller controller = loader.getController();
+            controller.setUser(currentUser);
+            Stage stage = (Stage) questionsButton.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
         } catch (Exception ex) {

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+
+<AnchorPane prefHeight="800.0" prefWidth="800.0" style="-fx-background-color: #fefefe;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.knowlwdgeflow.Controllers.allQuestions_Controller">
+    <fx:define>
+        <Circle fx:id="profileClip" radius="22.0" />
+    </fx:define>
+    <children>
+        <VBox spacing="16.0" style="-fx-padding: 20;" AnchorPane.topAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
+            <children>
+                <HBox alignment="CENTER_LEFT" spacing="12.0">
+                    <children>
+                        <Label text="All Questions" style="-fx-font-size: 26; -fx-font-weight: bold; -fx-text-fill: #1a1f2a;" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                            <children>
+                                <ImageView fx:id="profileImageView" fitHeight="44.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="false" onMouseClicked="#handleProfileClick">
+                                    <image>
+                                        <Image url="@../Images/knowledgeflowlogo.png" />
+                                    </image>
+                                </ImageView>
+                            </children>
+                        </HBox>
+                    </children>
+                </HBox>
+                <ListView fx:id="questionsListView" focusTraversable="false" style="-fx-background-insets: 0; -fx-padding: 0;" VBox.vgrow="ALWAYS" prefHeight="800.0" prefWidth="800.0">
+                    <placeholder>
+                        <Label text="No questions yet" style="-fx-text-fill: #9aa2b1;" />
+                    </placeholder>
+                </ListView>
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>
+
