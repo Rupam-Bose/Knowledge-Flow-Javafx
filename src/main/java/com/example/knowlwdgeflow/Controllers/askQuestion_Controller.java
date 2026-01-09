@@ -1,10 +1,14 @@
 package com.example.knowlwdgeflow.Controllers;
 
+import com.example.knowlwdgeflow.dao.QuestionDao;
+import com.example.knowlwdgeflow.model.Question;
 import com.example.knowlwdgeflow.model.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -26,8 +30,11 @@ public class askQuestion_Controller {
     private TextField questionField;
     @FXML
     private javafx.scene.image.ImageView questionImageView;
+    @FXML
+    private Button askNowButton;
 
     private User currentUser;
+    private final QuestionDao questionDao = new QuestionDao();
 
     @FXML
     public void initialize() {
@@ -40,6 +47,9 @@ public class askQuestion_Controller {
             rootPane.requestFocus();
         }
         loadQuestionImage();
+        if (askNowButton != null) {
+            askNowButton.setOnAction(e -> handleAskNow());
+        }
     }
 
     public void setUser(User user) {
@@ -85,5 +95,48 @@ public class askQuestion_Controller {
             }
         } catch (Exception ignored) {
         }
+    }
+
+    private void handleAskNow() {
+        try {
+            String text = questionField != null ? questionField.getText() : "";
+            if (text == null || text.trim().isEmpty()) {
+                showAlert("Please enter a question.");
+                return;
+            }
+            if (currentUser == null) {
+                showAlert("Please log in to ask a question.");
+                return;
+            }
+            Question saved = questionDao.insert(currentUser.getId(), text.trim());
+            // clear field and go to all questions
+            if (questionField != null) {
+                questionField.clear();
+            }
+            openAllQuestions();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            showAlert("Unable to post question: " + ex.getMessage());
+        }
+    }
+
+    private void openAllQuestions() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/allQuestions.fxml"));
+            Parent root = loader.load();
+            allQuestions_Controller controller = loader.getController();
+            controller.setUser(currentUser);
+            Stage stage = (Stage) askNowButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            showAlert("Unable to open All Questions: " + ex.getMessage());
+        }
+    }
+
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR, message);
+        alert.showAndWait();
     }
 }

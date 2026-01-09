@@ -22,4 +22,6 @@ module com.example.knowlwdgeflow {
     opens com.example.knowlwdgeflow to javafx.fxml;
     opens com.example.knowlwdgeflow.Controllers to javafx.fxml;
     exports com.example.knowlwdgeflow;
+    exports com.example.knowlwdgeflow.model;
+    exports com.example.knowlwdgeflow.dao;
 }
