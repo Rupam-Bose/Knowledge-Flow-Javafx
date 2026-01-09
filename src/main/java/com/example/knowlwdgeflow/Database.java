@@ -68,9 +68,19 @@ public final class Database {
                             "FOREIGN KEY(question_id) REFERENCES questions(id) ON DELETE CASCADE," +
                             "FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE" +
                             ")");
+                    stmt.executeUpdate("CREATE TABLE IF NOT EXISTS comments (" +
+                            "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                            "blog_id INTEGER NOT NULL," +
+                            "user_id INTEGER NOT NULL," +
+                            "content TEXT NOT NULL," +
+                            "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP," +
+                            "FOREIGN KEY(blog_id) REFERENCES blogs(id) ON DELETE CASCADE," +
+                            "FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE" +
+                            ")");
                     stmt.executeUpdate("CREATE INDEX IF NOT EXISTS idx_blogs_created_at ON blogs(created_at DESC)");
                     stmt.executeUpdate("CREATE INDEX IF NOT EXISTS idx_questions_created_at ON questions(created_at DESC)");
                     stmt.executeUpdate("CREATE INDEX IF NOT EXISTS idx_answers_question_id ON answers(question_id)");
+                    stmt.executeUpdate("CREATE INDEX IF NOT EXISTS idx_comments_blog_id ON comments(blog_id)");
                 }
                 ensureProfileImageColumn(conn);
             }

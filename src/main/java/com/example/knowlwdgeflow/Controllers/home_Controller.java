@@ -2,11 +2,17 @@ package com.example.knowlwdgeflow.Controllers;
 
 import com.example.knowlwdgeflow.dao.UserDao;
 import com.example.knowlwdgeflow.model.User;
+import com.example.knowlwdgeflow.service.LikeState;
 import com.example.knowlwdgeflow.service.SessionService;
+import com.example.knowlwdgeflow.service.BookmarkState;
+import com.example.knowlwdgeflow.dao.BookmarkDao;
+import com.example.knowlwdgeflow.dao.CommentDao;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -27,9 +33,15 @@ public class home_Controller {
     private final SessionService sessionService = new SessionService();
     private final UserDao userDao = new UserDao();
     private final com.example.knowlwdgeflow.dao.BlogDao blogDao = new com.example.knowlwdgeflow.dao.BlogDao();
+    private final BookmarkDao bookmarkDao = new BookmarkDao();
+    private final CommentDao commentDao = new CommentDao();
 
     private final java.util.Map<Integer, Boolean> likedMap = new java.util.HashMap<>();
-    private final java.util.Map<Integer, Integer> likeCounts = new java.util.HashMap<>();
+
+    private final LikeState likeState = LikeState.getInstance();
+    private final Runnable likeListener = this::refreshVisibleLikes;
+    private final BookmarkState bookmarkState = BookmarkState.getInstance();
+    private final Runnable bookmarkListener = this::refreshVisibleLikes;
 
     @FXML
     public void initialize() {
@@ -46,13 +58,34 @@ public class home_Controller {
         }
         loadProfileAvatar();
         loadBlogs();
+        likeState.addListener(likeListener);
+        bookmarkState.addListener(bookmarkListener);
+    }
+
+    @FXML
+    public void onClose() {
+        likeState.removeListener(likeListener);
+        bookmarkState.removeListener(bookmarkListener);
+    }
+
+    private void refreshVisibleLikes() {
+        if (blogListView == null) return;
+        blogListView.refresh();
     }
 
     private void loadBlogs() {
         if (blogListView == null) return;
         try {
             var blogs = javafx.collections.FXCollections.observableArrayList(blogDao.findRecent(50));
-            blogs.forEach(b -> likeCounts.putIfAbsent(b.getId(), 0));
+            blogs.forEach(b -> likeState.ensure(b.getId()));
+            // preload bookmark state from DB for current user
+            Integer userId = sessionService.getSavedUserId();
+            if (userId != null) {
+                for (var b : blogs) {
+                    boolean marked = bookmarkDao.isBookmarked(userId, b.getId());
+                    if (marked) bookmarkState.toggle(b.getId()); // sets to true if default false
+                }
+            }
             blogListView.setItems(blogs);
         } catch (Exception e) {
             e.printStackTrace();
@@ -150,41 +183,67 @@ public class home_Controller {
             var actions = new javafx.scene.layout.HBox(12);
             var readMore = new javafx.scene.control.Button("Read more");
             readMore.setStyle("-fx-background-color: #1f7aff; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 6 12;");
+            readMore.setOnAction(e -> openFullBlog(blog));
 
             int blogId = blog.getId();
+            // Ensure bookmark state matches DB
+            try {
+                Integer userId = sessionService.getSavedUserId();
+                if (userId != null && bookmarkDao.isBookmarked(userId, blogId)) {
+                    if (!bookmarkState.isBookmarked(blogId)) {
+                        bookmarkState.toggle(blogId);
+                    }
+                }
+            } catch (Exception ignored) {}
+
             var likeBtn = new javafx.scene.control.Button();
             likeBtn.setStyle("-fx-background-color: transparent; -fx-border-color: #d2d7e4; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 6 10;");
             var likeIcon = new javafx.scene.image.ImageView();
             likeIcon.setFitHeight(16);
             likeIcon.setFitWidth(16);
             likeBtn.setGraphic(likeIcon);
-            var likeCount = new javafx.scene.control.Label(String.valueOf(likeCounts.getOrDefault(blogId, 0)));
+            var likeCount = new javafx.scene.control.Label(String.valueOf(likeState.getCount(blogId)));
             likeCount.setStyle("-fx-text-fill: #566072;");
 
             updateLikeVisual(blogId, likeIcon, likeCount);
             likeBtn.setOnAction(e -> {
-                boolean liked = likedMap.getOrDefault(blogId, false);
-                int cnt = likeCounts.getOrDefault(blogId, 0);
-                if (liked) {
-                    cnt = Math.max(0, cnt - 1);
-                } else {
-                    cnt += 1;
-                }
-                likedMap.put(blogId, !liked);
-                likeCounts.put(blogId, cnt);
+                likeState.toggle(blogId);
+                likedMap.put(blogId, likeState.isLiked(blogId));
                 updateLikeVisual(blogId, likeIcon, likeCount);
             });
-
             var likeBox = new javafx.scene.layout.HBox(6, likeBtn, likeCount);
             likeBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
             var commentBtn = iconButton("/Images/comments.png");
-            var commentCount = new javafx.scene.control.Label("0");
+            commentBtn.setOnAction(e -> openFullBlog(blog));
+            var commentCount = new javafx.scene.control.Label();
             commentCount.setStyle("-fx-text-fill: #566072;");
+            try {
+                commentCount.setText(String.valueOf(commentDao.countByBlog(blogId)));
+            } catch (Exception ignored) {
+                commentCount.setText("0");
+            }
             var commentBox = new javafx.scene.layout.HBox(6, commentBtn, commentCount);
             commentBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
             var bookmarkBtn = iconButton("/Images/bookmark_black.png");
+            bookmarkBtn.setOnAction(e -> {
+                Integer userId = sessionService.getSavedUserId();
+                if (userId != null) {
+                    try {
+                        if (bookmarkState.isBookmarked(blogId)) {
+                            bookmarkDao.removeBookmark(userId, blogId);
+                        } else {
+                            bookmarkDao.addBookmark(userId, blogId);
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                bookmarkState.toggle(blogId);
+                updateBookmarkVisual(blogId, (javafx.scene.image.ImageView) bookmarkBtn.getGraphic());
+            });
+            updateBookmarkVisual(blogId, (javafx.scene.image.ImageView) bookmarkBtn.getGraphic());
             var bookmarkBox = new javafx.scene.layout.HBox(6, bookmarkBtn);
             bookmarkBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
@@ -196,12 +255,20 @@ public class home_Controller {
         }
 
         private void updateLikeVisual(int blogId, javafx.scene.image.ImageView icon, javafx.scene.control.Label countLabel) {
-            boolean liked = likedMap.getOrDefault(blogId, false);
+            boolean liked = likeState.isLiked(blogId);
             String path = liked ? "/Images/heart_red.png" : "/Images/heart_black.png";
             try (java.io.InputStream is = getClass().getResourceAsStream(path)) {
                 if (is != null) icon.setImage(new javafx.scene.image.Image(is));
             } catch (Exception ignored) {}
-            countLabel.setText(String.valueOf(likeCounts.getOrDefault(blogId, 0)));
+            countLabel.setText(String.valueOf(likeState.getCount(blogId)));
+        }
+
+        private void updateBookmarkVisual(int blogId, javafx.scene.image.ImageView icon) {
+            boolean marked = bookmarkState.isBookmarked(blogId);
+            String path = marked ? "/Images/bookmark_blue.png" : "/Images/bookmark_black.png";
+            try (java.io.InputStream is = getClass().getResourceAsStream(path)) {
+                if (is != null) icon.setImage(new javafx.scene.image.Image(is));
+            } catch (Exception ignored) {}
         }
 
         private javafx.scene.control.Button iconButton(String path) {
@@ -221,6 +288,22 @@ public class home_Controller {
             if (text == null) return "";
             if (text.length() <= max) return text;
             return text.substring(0, max) + "...";
+        }
+    }
+
+    private void openFullBlog(com.example.knowlwdgeflow.model.Blog blog) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/fullBlog.fxml"));
+            Parent root = loader.load();
+            var controller = loader.getController();
+            if (controller instanceof fullBlog_Controller fullController) {
+                fullController.setBlog(blog);
+            }
+            Stage stage = (Stage) blogListView.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 }

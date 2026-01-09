@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Circle?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.knowlwdgeflow.Controllers.bookmarks_Controller"
+            prefHeight="800.0" prefWidth="800.0" style="-fx-background-color: #fefefe;">
+
+    <fx:define>
+        <Circle fx:id="profileClip" radius="22.0" />
+    </fx:define>
+
+    <children>
+        <VBox spacing="16.0" style="-fx-padding: 20;" AnchorPane.topAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
+            <children>
+                <HBox alignment="CENTER_LEFT" spacing="12.0">
+                    <children>
+                        <Label text="Bookmarks" style="-fx-font-size: 26; -fx-font-weight: bold; -fx-text-fill: #1a1f2a;" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <ImageView fx:id="profileImageView" fitHeight="44.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="false" onMouseClicked="#handleProfileClick">
+                            <image>
+                                <javafx.scene.image.Image url="@../Images/knowledgeflowlogo.png" />
+                            </image>
+                        </ImageView>
+                    </children>
+                </HBox>
+                <ListView fx:id="bookmarksListView" VBox.vgrow="ALWAYS" focusTraversable="false" />
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>

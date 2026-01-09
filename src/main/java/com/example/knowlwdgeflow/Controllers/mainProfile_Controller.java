@@ -44,6 +44,8 @@ public class mainProfile_Controller {
     private Button askQuestionButton;
     @FXML
     private Button questionsButton;
+    @FXML
+    private Button bookmarksButton;
 
     private User currentUser;
     private final AuthService authService = new AuthService();
@@ -72,6 +74,9 @@ public class mainProfile_Controller {
         }
         if (questionsButton != null) {
             questionsButton.setOnAction(e -> handleAllQuestions());
+        }
+        if (bookmarksButton != null) {
+            bookmarksButton.setOnAction(e -> handleBookmarks());
         }
     }
 
@@ -200,6 +205,20 @@ public class mainProfile_Controller {
             allQuestions_Controller controller = loader.getController();
             controller.setUser(currentUser);
             Stage stage = (Stage) questionsButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void handleBookmarks() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/bookmarks.fxml"));
+            Parent root = loader.load();
+            bookmarks_Controller controller = loader.getController();
+            controller.setUser(currentUser);
+            Stage stage = (Stage) bookmarksButton.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
         } catch (Exception ex) {

@@ -24,4 +24,5 @@ module com.example.knowlwdgeflow {
     exports com.example.knowlwdgeflow;
     exports com.example.knowlwdgeflow.model;
     exports com.example.knowlwdgeflow.dao;
+    exports com.example.knowlwdgeflow.service;
 }

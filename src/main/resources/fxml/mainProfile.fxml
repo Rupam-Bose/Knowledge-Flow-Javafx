@@ -28,7 +28,7 @@
                                 <Button fx:id="homeButton" style="-fx-background-color: #2563eb; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 10 14;" text="Home" />
                                 <Button fx:id="questionsButton" style="-fx-background-color: #2563eb; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 10 14;" text="Questions and Answers" />
                                 <Button fx:id="askQuestionButton" mnemonicParsing="false" style="-fx-background-color: #2563eb; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 10 14;" text="Ask Questions" />
-                                <Button style="-fx-background-color: #2563eb; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 10 14;" text="Bookmarks" />
+                                <Button fx:id="bookmarksButton" style="-fx-background-color: #2563eb; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 10 14;" text="Bookmarks" />
                                 <Button fx:id="writingBlogButton" style="-fx-background-color: #2563eb; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 10 14;" text="Writing Blog" />
                                 <Button fx:id="logoutButton" style="-fx-background-color: #2563eb; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 10 14;" text="Logout" />
                             </children>
