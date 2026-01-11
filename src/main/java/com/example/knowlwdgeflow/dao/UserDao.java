@@ -92,6 +92,17 @@ public class UserDao {
         }
     }
 
+    public User findByIdWithFollowerCount(int id, FollowDao followDao) throws SQLException {
+        User base = findById(id);
+        if (base == null) return null;
+        try {
+            int count = followDao.countFollowers(id);
+            return new User(base.getId(), base.getName(), base.getEmail(), base.getProfileImage(), count);
+        } catch (Exception e) {
+            return base;
+        }
+    }
+
     private User mapUser(ResultSet rs) throws SQLException {
         int id = rs.getInt("id");
         String name = rs.getString("name");

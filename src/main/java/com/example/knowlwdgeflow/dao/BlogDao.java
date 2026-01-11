@@ -64,6 +64,22 @@ public class BlogDao {
         return blogs;
     }
 
+    public List<Blog> findByUser(int userId) throws SQLException {
+        String sql = "SELECT b.id, b.user_id, b.title, b.content, b.created_at, u.name, u.email, u.profile_image " +
+                "FROM blogs b JOIN users u ON u.id = b.user_id WHERE b.user_id = ? ORDER BY b.created_at DESC";
+        List<Blog> blogs = new ArrayList<>();
+        try (Connection conn = Database.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    blogs.add(mapBlog(rs));
+                }
+            }
+        }
+        return blogs;
+    }
+
     private Blog mapBlog(ResultSet rs) throws SQLException {
         int id = rs.getInt("id");
         int userId = rs.getInt("user_id");
@@ -77,4 +93,3 @@ public class BlogDao {
         return new Blog(id, userId, title, content, createdAt, authorName, authorEmail, authorImage);
     }
 }
-

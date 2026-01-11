@@ -77,10 +77,20 @@ public final class Database {
                             "FOREIGN KEY(blog_id) REFERENCES blogs(id) ON DELETE CASCADE," +
                             "FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE" +
                             ")");
+                    stmt.executeUpdate("CREATE TABLE IF NOT EXISTS followers (" +
+                            "follower_id INTEGER NOT NULL," +
+                            "followee_id INTEGER NOT NULL," +
+                            "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP," +
+                            "PRIMARY KEY(follower_id, followee_id)," +
+                            "FOREIGN KEY(follower_id) REFERENCES users(id) ON DELETE CASCADE," +
+                            "FOREIGN KEY(followee_id) REFERENCES users(id) ON DELETE CASCADE" +
+                            ")");
                     stmt.executeUpdate("CREATE INDEX IF NOT EXISTS idx_blogs_created_at ON blogs(created_at DESC)");
                     stmt.executeUpdate("CREATE INDEX IF NOT EXISTS idx_questions_created_at ON questions(created_at DESC)");
                     stmt.executeUpdate("CREATE INDEX IF NOT EXISTS idx_answers_question_id ON answers(question_id)");
                     stmt.executeUpdate("CREATE INDEX IF NOT EXISTS idx_comments_blog_id ON comments(blog_id)");
+                    stmt.executeUpdate("CREATE INDEX IF NOT EXISTS idx_followers_followee ON followers(followee_id)");
+                    stmt.executeUpdate("CREATE INDEX IF NOT EXISTS idx_followers_follower ON followers(follower_id)");
                 }
                 ensureProfileImageColumn(conn);
             }

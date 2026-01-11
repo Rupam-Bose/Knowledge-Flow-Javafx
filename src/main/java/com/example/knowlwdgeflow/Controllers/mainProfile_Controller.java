@@ -2,6 +2,7 @@ package com.example.knowlwdgeflow.Controllers;
 
 import com.example.knowlwdgeflow.model.User;
 import com.example.knowlwdgeflow.service.AuthService;
+import com.example.knowlwdgeflow.service.FollowService;
 import com.example.knowlwdgeflow.service.SessionService;
 import com.example.knowlwdgeflow.service.WindowService;
 import com.example.knowlwdgeflow.dao.UserDao;
@@ -30,6 +31,8 @@ public class mainProfile_Controller {
     @FXML
     private Label emailLabel;
     @FXML
+    private Label followerCountLabel;
+    @FXML
     private ImageView profileImageView;
     @FXML
     private Circle clipCircle;
@@ -53,6 +56,7 @@ public class mainProfile_Controller {
     private final SessionService sessionService = new SessionService();
     private final WindowService windowService = new WindowService();
     private final UserDao userDao = new UserDao();
+    private final FollowService followService = new FollowService();
 
     @FXML
     public void initialize() {
@@ -98,7 +102,20 @@ public class mainProfile_Controller {
         if (user != null) {
             nameLabel.setText(user.getName());
             emailLabel.setText(user.getEmail());
+            int count = resolveFollowerCount(user);
+            followerCountLabel.setText("Followers: " + count);
             loadProfileImage(user.getProfileImage());
+        }
+    }
+
+    private int resolveFollowerCount(User user) {
+        if (user.getFollowerCount() != null) {
+            return user.getFollowerCount();
+        }
+        try {
+            return followService.countFollowers(user.getId());
+        } catch (Exception e) {
+            return 0;
         }
     }
 

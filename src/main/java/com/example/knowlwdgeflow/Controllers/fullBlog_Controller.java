@@ -9,8 +9,12 @@ import com.example.knowlwdgeflow.service.LikeState;
 import com.example.knowlwdgeflow.service.SessionService;
 import com.example.knowlwdgeflow.service.BookmarkState;
 import com.example.knowlwdgeflow.service.WindowService;
+import com.example.knowlwdgeflow.service.FollowService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -22,6 +26,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.scene.Cursor;
+import javafx.scene.input.MouseEvent;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -71,6 +76,7 @@ public class fullBlog_Controller {
 
     private Blog blog;
     private User currentUser; // track logged-in user for menu navigation
+    private User author;
 
     private final SessionService sessionService = new SessionService();
     private final UserDao userDao = new UserDao();
@@ -78,6 +84,7 @@ public class fullBlog_Controller {
     private final LikeState likeState = LikeState.getInstance();
     private final BookmarkState bookmarkState = BookmarkState.getInstance();
     private final WindowService windowService = new WindowService();
+    private final FollowService followService = new FollowService();
     private final Runnable likeListener = this::refreshLikeUi;
     private final Runnable bookmarkListener = this::refreshBookmarkUi;
 
@@ -96,6 +103,8 @@ public class fullBlog_Controller {
             authorImageView.setClip(authorClip);
             authorImageView.fitWidthProperty().addListener((obs, o, n) -> updateAuthorClip());
             authorImageView.fitHeightProperty().addListener((obs, o, n) -> updateAuthorClip());
+            authorImageView.setCursor(Cursor.HAND);
+            authorImageView.setOnMouseClicked(this::openAuthorProfile);
             updateAuthorClip();
         }
         renderBlog();
@@ -149,6 +158,7 @@ public class fullBlog_Controller {
         refreshLikeUi();
         refreshBookmarkUi();
         loadAuthorAvatar();
+        loadAuthorModel();
         loadComments();
     }
 
@@ -180,6 +190,13 @@ public class fullBlog_Controller {
         }
     }
 
+    private void loadAuthorModel() {
+        if (blog == null) return;
+        try {
+            author = userDao.findById(blog.getUserId());
+        } catch (Exception ignored) {}
+    }
+
     private void setPlaceholderAvatar(ImageView target) {
         if (target == null) return;
         try (InputStream is = getClass().getResourceAsStream("/Images/knowledgeflowlogo.png")) {
@@ -200,6 +217,22 @@ public class fullBlog_Controller {
             mainProfile_Controller controller = windowService.switchSceneAndGetController(stage, "/fxml/mainProfile.fxml");
             if (controller != null && user != null) {
                 controller.setUser(user);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void openAuthorProfile(MouseEvent event) {
+        try {
+            Integer currentUserId = sessionService.getSavedUserId();
+            if (currentUserId == null || author == null) return;
+
+            Stage stage = (Stage) rootScroll.getScene().getWindow();
+            authorProfilePopup_Controller controller = windowService.switchSceneAndGetController(stage, "/fxml/authorProfilePopup.fxml");
+            if (controller != null) {
+                controller.setContext(currentUserId, author.getId());
             }
         } catch (Exception ex) {
             ex.printStackTrace();

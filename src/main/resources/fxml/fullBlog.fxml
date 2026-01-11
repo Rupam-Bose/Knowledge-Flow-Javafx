@@ -53,8 +53,8 @@
 
                             <HBox spacing="10" alignment="CENTER_LEFT">
                                 <children>
-                                    <ImageView fx:id="authorImageView" fitHeight="40" fitWidth="40" pickOnBounds="true" preserveRatio="true" />
-                                    <Label fx:id="metaLabel" wrapText="true" style="-fx-text-fill: #6b7280;" />
+                                    <ImageView fx:id="authorImageView" fitHeight="40" fitWidth="40" pickOnBounds="true" preserveRatio="true" onMouseClicked="#openAuthorProfile" />
+                                    <Label fx:id="metaLabel" wrapText="true" style="-fx-text-fill: #6b7280;" onMouseClicked="#openAuthorProfile" />
                                 </children>
                             </HBox>
 
