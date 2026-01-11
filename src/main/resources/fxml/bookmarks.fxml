@@ -1,38 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
+<AnchorPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.knowlwdgeflow.Controllers.bookmarks_Controller"
-            prefHeight="800.0" prefWidth="800.0" style="-fx-background-color: #fefefe;">
-
-    <fx:define>
-        <Circle fx:id="profileClip" radius="22.0" />
-    </fx:define>
-
+            prefHeight="800.0" prefWidth="1100.0" style="-fx-background-color: #fefefe;">
     <children>
-        <VBox spacing="16.0" style="-fx-padding: 20;" AnchorPane.topAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
-            <children>
-                <HBox alignment="CENTER_LEFT" spacing="12.0">
-                    <children>
-                        <Label text="Bookmarks" style="-fx-font-size: 26; -fx-font-weight: bold; -fx-text-fill: #1a1f2a;" />
-                        <Region HBox.hgrow="ALWAYS" />
-                        <ImageView fx:id="profileImageView" fitHeight="44.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="false" onMouseClicked="#handleProfileClick">
-                            <image>
-                                <javafx.scene.image.Image url="@../Images/knowledgeflowlogo.png" />
-                            </image>
-                        </ImageView>
-                    </children>
-                </HBox>
-                <ListView fx:id="bookmarksListView" VBox.vgrow="ALWAYS" focusTraversable="false" />
-            </children>
-        </VBox>
+        <HBox AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0">
+            <!-- Side menu -->
+            <VBox prefWidth="240" spacing="14" style="-fx-background-color: linear-gradient(to bottom, #2f6ad9, #1d4fa3); -fx-padding: 24; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 16, 0, 0, 2);">
+                <children>
+                    <HBox alignment="CENTER_LEFT" spacing="12">
+                        <children>
+                            <ImageView fx:id="profileImageView" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="false">
+                                <image>
+                                    <Image url="@../Images/knowledgeflowlogo.png" />
+                                </image>
+                                <clip>
+                                    <Circle fx:id="profileClip" centerX="20.0" centerY="20.0" radius="20.0" />
+                                </clip>
+                            </ImageView>
+                            <Label text="Menu" style="-fx-text-fill: white; -fx-font-size: 18; -fx-font-weight: bold;" />
+                        </children>
+                    </HBox>
+                    <Separator opacity="0.35" />
+                    <Button text="My Profile" onAction="#handleProfileClick" style="-fx-background-color: rgba(255,255,255,0.12); -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 10 12; -fx-border-color: rgba(255,255,255,0.25); -fx-border-radius: 10;" />
+                    <Button text="Home" onAction="#handleHome" style="-fx-background-color: rgba(255,255,255,0.12); -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 10 12; -fx-border-color: rgba(255,255,255,0.25); -fx-border-radius: 10;" />
+                    <Button text="Writing Blog" onAction="#handleWritingBlog" style="-fx-background-color: rgba(255,255,255,0.12); -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 10 12; -fx-border-color: rgba(255,255,255,0.25); -fx-border-radius: 10;" />
+                    <Button text="Ask Question" onAction="#handleAskQuestion" style="-fx-background-color: rgba(255,255,255,0.12); -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 10 12; -fx-border-color: rgba(255,255,255,0.25); -fx-border-radius: 10;" />
+                    <Button text="Answers and Questions" onAction="#handleAllQuestions" style="-fx-background-color: rgba(255,255,255,0.12); -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 10 12; -fx-border-color: rgba(255,255,255,0.25); -fx-border-radius: 10;" />
+                    <Button text="Bookmarks" onAction="#handleBookmarks" style="-fx-background-color: rgba(255,255,255,0.12); -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 10 12; -fx-border-color: rgba(255,255,255,0.25); -fx-border-radius: 10;" />
+                    <Region VBox.vgrow="ALWAYS" />
+                    <Button text="Logout" onAction="#handleLogout" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 10 12; -fx-border-color: rgba(255,255,255,0.35); -fx-border-radius: 10;" />
+                </children>
+            </VBox>
+
+            <!-- Main content -->
+            <VBox spacing="16" style="-fx-padding: 20;" HBox.hgrow="ALWAYS">
+                <children>
+                    <HBox alignment="CENTER_LEFT" spacing="12">
+                        <children>
+                            <Label text="Bookmarks" style="-fx-font-size: 26; -fx-font-weight: bold; -fx-text-fill: #1a1f2a;" />
+                            <Region HBox.hgrow="ALWAYS" />
+                        </children>
+                    </HBox>
+                    <ListView fx:id="bookmarksListView" focusTraversable="false" VBox.vgrow="ALWAYS">
+                        <placeholder>
+                            <Label text="No bookmarks yet" style="-fx-text-fill: #9aa2b1;" />
+                        </placeholder>
+                    </ListView>
+                </children>
+            </VBox>
+        </HBox>
     </children>
 </AnchorPane>

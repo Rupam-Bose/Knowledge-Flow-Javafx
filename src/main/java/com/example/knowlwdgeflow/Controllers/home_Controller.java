@@ -7,6 +7,7 @@ import com.example.knowlwdgeflow.service.SessionService;
 import com.example.knowlwdgeflow.service.BookmarkState;
 import com.example.knowlwdgeflow.dao.BookmarkDao;
 import com.example.knowlwdgeflow.dao.CommentDao;
+import com.example.knowlwdgeflow.service.WindowService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,6 +15,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Circle;
@@ -21,6 +23,10 @@ import javafx.stage.Stage;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.stream.Collectors;
+
+import javafx.collections.ObservableList;
+import javafx.collections.FXCollections;
 
 public class home_Controller {
     @FXML
@@ -29,6 +35,8 @@ public class home_Controller {
     private Circle profileClip;
     @FXML
     private ListView<com.example.knowlwdgeflow.model.Blog> blogListView;
+    @FXML
+    private TextField searchField;
 
     private final SessionService sessionService = new SessionService();
     private final UserDao userDao = new UserDao();
@@ -42,6 +50,9 @@ public class home_Controller {
     private final Runnable likeListener = this::refreshVisibleLikes;
     private final BookmarkState bookmarkState = BookmarkState.getInstance();
     private final Runnable bookmarkListener = this::refreshVisibleLikes;
+    private final WindowService windowService = new WindowService();
+
+    private ObservableList<com.example.knowlwdgeflow.model.Blog> allBlogs = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
@@ -76,20 +87,33 @@ public class home_Controller {
     private void loadBlogs() {
         if (blogListView == null) return;
         try {
-            var blogs = javafx.collections.FXCollections.observableArrayList(blogDao.findRecent(50));
-            blogs.forEach(b -> likeState.ensure(b.getId()));
+            allBlogs = javafx.collections.FXCollections.observableArrayList(blogDao.findRecent(50));
+            allBlogs.forEach(b -> likeState.ensure(b.getId()));
             // preload bookmark state from DB for current user
             Integer userId = sessionService.getSavedUserId();
             if (userId != null) {
-                for (var b : blogs) {
+                for (var b : allBlogs) {
                     boolean marked = bookmarkDao.isBookmarked(userId, b.getId());
-                    if (marked) bookmarkState.toggle(b.getId()); // sets to true if default false
+                    if (marked && !bookmarkState.isBookmarked(b.getId())) bookmarkState.toggle(b.getId());
                 }
             }
-            blogListView.setItems(blogs);
-        } catch (Exception e) {
-            e.printStackTrace();
+            blogListView.setItems(allBlogs);
+         } catch (Exception e) {
+             e.printStackTrace();
+         }
+     }
+
+    @FXML
+    private void handleSearch() {
+        if (blogListView == null) return;
+        String query = searchField != null ? searchField.getText() : null;
+        if (query == null || query.trim().isEmpty()) {
+            blogListView.setItems(allBlogs);
+            return;
         }
+        String q = query.trim().toLowerCase();
+        var filtered = allBlogs.filtered(b -> b.getTitle() != null && b.getTitle().toLowerCase().contains(q));
+        blogListView.setItems(filtered);
     }
 
     private void loadProfileAvatar() {
@@ -121,20 +145,94 @@ public class home_Controller {
         }
     }
 
+    @FXML
     private void openProfile() {
         try {
             Integer userId = sessionService.getSavedUserId();
             User user = userId != null ? userDao.findById(userId) : null;
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/mainProfile.fxml"));
-            Parent root = loader.load();
-            var controller = loader.getController();
-            if (controller instanceof mainProfile_Controller profileController && user != null) {
-                profileController.setUser(user);
-            }
             Stage stage = (Stage) profileImageView.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
+            mainProfile_Controller controller = windowService.switchSceneAndGetController(stage, "/fxml/mainProfile.fxml");
+            if (controller != null && user != null) {
+                controller.setUser(user);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleHome() {
+        try {
+            Stage stage = (Stage) profileImageView.getScene().getWindow();
+            windowService.switchScene(stage, "/fxml/Home.fxml");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleWritingBlog() {
+        try {
+            Stage stage = (Stage) profileImageView.getScene().getWindow();
+            User user = sessionService.getSavedUserId() != null ? userDao.findById(sessionService.getSavedUserId()) : null;
+            writingBlog_Controller controller = windowService.switchSceneAndGetController(stage, "/fxml/writingBlog.fxml");
+            if (controller != null && user != null) {
+                controller.setUser(user);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleAskQuestion() {
+        try {
+            Stage stage = (Stage) profileImageView.getScene().getWindow();
+            User user = sessionService.getSavedUserId() != null ? userDao.findById(sessionService.getSavedUserId()) : null;
+            askQuestion_Controller controller = windowService.switchSceneAndGetController(stage, "/fxml/askQuestion.fxml");
+            if (controller != null && user != null) {
+                controller.setUser(user);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleAllQuestions() {
+        try {
+            Stage stage = (Stage) profileImageView.getScene().getWindow();
+            User user = sessionService.getSavedUserId() != null ? userDao.findById(sessionService.getSavedUserId()) : null;
+            allQuestions_Controller controller = windowService.switchSceneAndGetController(stage, "/fxml/allQuestions.fxml");
+            if (controller != null && user != null) {
+                controller.setUser(user);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleBookmarks() {
+        try {
+            Stage stage = (Stage) profileImageView.getScene().getWindow();
+            User user = sessionService.getSavedUserId() != null ? userDao.findById(sessionService.getSavedUserId()) : null;
+            bookmarks_Controller controller = windowService.switchSceneAndGetController(stage, "/fxml/bookmarks.fxml");
+            if (controller != null && user != null) {
+                controller.setUser(user);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleLogout() {
+        try {
+            sessionService.clear();
+            Stage stage = (Stage) profileImageView.getScene().getWindow();
+            windowService.switchScene(stage, "/fxml/welcome.fxml");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -293,15 +391,11 @@ public class home_Controller {
 
     private void openFullBlog(com.example.knowlwdgeflow.model.Blog blog) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/fullBlog.fxml"));
-            Parent root = loader.load();
-            var controller = loader.getController();
-            if (controller instanceof fullBlog_Controller fullController) {
-                fullController.setBlog(blog);
-            }
             Stage stage = (Stage) blogListView.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
+            fullBlog_Controller controller = windowService.switchSceneAndGetController(stage, "/fxml/fullBlog.fxml");
+            if (controller != null) {
+                controller.setBlog(blog);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }

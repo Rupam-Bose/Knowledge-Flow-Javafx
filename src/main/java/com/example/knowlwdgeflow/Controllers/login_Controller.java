@@ -2,6 +2,8 @@ package com.example.knowlwdgeflow.Controllers;
 
 import com.example.knowlwdgeflow.model.User;
 import com.example.knowlwdgeflow.service.AuthService;
+import com.example.knowlwdgeflow.service.WindowService;
+import com.example.knowlwdgeflow.service.SessionService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -33,6 +35,8 @@ public class login_Controller {
     private Label errorLabel;
 
     private final AuthService authService = new AuthService();
+    private final WindowService windowService = new WindowService();
+    private final SessionService sessionService = new SessionService();
 
     @FXML
     public void initialize() {
@@ -55,17 +59,14 @@ public class login_Controller {
 
     private void openMainProfile(User user) {
         try {
-            var fxml = getClass().getResource("/fxml/mainProfile.fxml");
-            if (fxml == null) {
-                throw new IllegalStateException("mainProfile.fxml not found on classpath");
-            }
-            FXMLLoader loader = new FXMLLoader(fxml);
-            Parent root = loader.load();
-            mainProfile_Controller controller = loader.getController();
-            controller.setUser(user);
             Stage stage = (Stage) rootPane.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
+            // persist session for auto-login
+            sessionService.saveUserId(user.getId());
+            // switch and get controller to pass user data
+            mainProfile_Controller controller = windowService.switchSceneAndGetController(stage, "/fxml/mainProfile.fxml");
+            if (controller != null) {
+                controller.setUser(user);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
             errorLabel.setText("Unable to load profile: " + ex.getMessage());
@@ -74,10 +75,8 @@ public class login_Controller {
 
     private void openScene(String fxmlPath) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
             Stage stage = (Stage) rootPane.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
+            windowService.switchScene(stage, fxmlPath);
         } catch (Exception ex) {
             ex.printStackTrace();
             errorLabel.setText("Navigation failed");

@@ -3,12 +3,13 @@ package com.example.knowlwdgeflow.Controllers;
 import com.example.knowlwdgeflow.model.User;
 import com.example.knowlwdgeflow.service.AuthService;
 import com.example.knowlwdgeflow.service.SessionService;
+import com.example.knowlwdgeflow.service.WindowService;
+import com.example.knowlwdgeflow.dao.UserDao;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -50,6 +51,8 @@ public class mainProfile_Controller {
     private User currentUser;
     private final AuthService authService = new AuthService();
     private final SessionService sessionService = new SessionService();
+    private final WindowService windowService = new WindowService();
+    private final UserDao userDao = new UserDao();
 
     @FXML
     public void initialize() {
@@ -77,6 +80,16 @@ public class mainProfile_Controller {
         }
         if (bookmarksButton != null) {
             bookmarksButton.setOnAction(e -> handleBookmarks());
+        }
+
+        Integer uid = sessionService.getSavedUserId();
+        if (uid != null) {
+            try {
+                User u = userDao.findById(uid);
+                if (u != null) {
+                    setUser(u);
+                }
+            } catch (Exception ignored) {}
         }
     }
 
@@ -124,6 +137,9 @@ public class mainProfile_Controller {
                 profileImageView.setImage(image);
                 byte[] bytes = imageToBytes(image);
                 authService.updateProfileImage(currentUser.getId(), bytes);
+                // refresh persisted user so other screens see new image
+                currentUser = userDao.findById(currentUser.getId());
+                setUser(currentUser);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -139,11 +155,8 @@ public class mainProfile_Controller {
     private void handleLogout() {
         sessionService.clear();
         try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/fxml/welcome.fxml"));
-            javafx.scene.Parent root = loader.load();
             var stage = (javafx.stage.Stage) uploadButton.getScene().getWindow();
-            stage.setScene(new javafx.scene.Scene(root));
-            stage.show();
+            windowService.switchScene(stage, "/fxml/welcome.fxml");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -151,11 +164,8 @@ public class mainProfile_Controller {
 
     private void handleHome() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Home.fxml"));
-            Parent root = loader.load();
             Stage stage = (Stage) homeButton.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
+            windowService.switchScene(stage, "/fxml/Home.fxml");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -163,13 +173,11 @@ public class mainProfile_Controller {
 
     private void handleWritingBlog() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/writingBlog.fxml"));
-            Parent root = loader.load();
-            writingBlog_Controller controller = loader.getController();
-            controller.setUser(currentUser);
             Stage stage = (Stage) writingBlogButton.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
+            writingBlog_Controller controller = windowService.switchSceneAndGetController(stage, "/fxml/writingBlog.fxml");
+            if (controller != null) {
+                controller.setUser(currentUser);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -177,36 +185,24 @@ public class mainProfile_Controller {
 
     private void handleAskQuestion() {
         try {
-            var fxmlUrl = getClass().getResource("/fxml/askQuestion.fxml");
-            if (fxmlUrl == null) {
-                throw new IllegalStateException("askQuestion.fxml not found on classpath");
-            }
-            FXMLLoader loader = new FXMLLoader(fxmlUrl);
-            Parent root = loader.load();
-            askQuestion_Controller controller = loader.getController();
-            controller.setUser(currentUser);
             Stage stage = (Stage) askQuestionButton.getScene().getWindow();
-            if (stage == null) {
-                throw new IllegalStateException("Stage not available for askQuestionButton");
+            askQuestion_Controller controller = windowService.switchSceneAndGetController(stage, "/fxml/askQuestion.fxml");
+            if (controller != null) {
+                controller.setUser(currentUser);
             }
-            stage.setScene(new Scene(root));
-            stage.show();
         } catch (Exception ex) {
             ex.printStackTrace();
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to open Ask Question screen: " + ex.getMessage());
-            alert.showAndWait();
+            // Removed dialog popup per request
         }
     }
 
     private void handleAllQuestions() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/allQuestions.fxml"));
-            Parent root = loader.load();
-            allQuestions_Controller controller = loader.getController();
-            controller.setUser(currentUser);
             Stage stage = (Stage) questionsButton.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
+            allQuestions_Controller controller = windowService.switchSceneAndGetController(stage, "/fxml/allQuestions.fxml");
+            if (controller != null) {
+                controller.setUser(currentUser);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -214,13 +210,11 @@ public class mainProfile_Controller {
 
     private void handleBookmarks() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/bookmarks.fxml"));
-            Parent root = loader.load();
-            bookmarks_Controller controller = loader.getController();
-            controller.setUser(currentUser);
             Stage stage = (Stage) bookmarksButton.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
+            bookmarks_Controller controller = windowService.switchSceneAndGetController(stage, "/fxml/bookmarks.fxml");
+            if (controller != null) {
+                controller.setUser(currentUser);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }

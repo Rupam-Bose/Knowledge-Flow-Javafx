@@ -4,12 +4,10 @@ import com.example.knowlwdgeflow.dao.AnswerDao;
 import com.example.knowlwdgeflow.model.Answer;
 import com.example.knowlwdgeflow.model.Question;
 import com.example.knowlwdgeflow.model.User;
+import com.example.knowlwdgeflow.service.SessionService;
+import com.example.knowlwdgeflow.service.WindowService;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -49,6 +47,8 @@ public class answerQuestion_Controller {
     private User currentUser;
     private Question currentQuestion;
     private final AnswerDao answerDao = new AnswerDao();
+    private final WindowService windowService = new WindowService();
+    private final SessionService sessionService = new SessionService();
 
     @FXML
     public void initialize() {
@@ -67,7 +67,7 @@ public class answerQuestion_Controller {
             questionAuthorImage.setClip(questionClip);
         }
         if (sendButton != null) {
-            sendButton.setOnAction(e -> handleSend());
+            sendButton.setOnAction(evt -> handleSend());
         }
         setProfileImageFromUser();
     }
@@ -86,14 +86,73 @@ public class answerQuestion_Controller {
     @FXML
     private void handleProfileClick() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/mainProfile.fxml"));
-            Parent root = loader.load();
-            mainProfile_Controller controller = loader.getController();
-            controller.setUser(currentUser);
             Stage stage = (Stage) profileImageView.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
+            mainProfile_Controller controller = windowService.switchSceneAndGetController(stage, "/fxml/mainProfile.fxml");
+            if (controller != null) {
+                controller.setUser(currentUser);
+            }
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleHome() {
+        try {
+            Stage stage = (Stage) profileImageView.getScene().getWindow();
+            windowService.switchScene(stage, "/fxml/Home.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleWritingBlog() {
+        try {
+            Stage stage = (Stage) profileImageView.getScene().getWindow();
+            writingBlog_Controller controller = windowService.switchSceneAndGetController(stage, "/fxml/writingBlog.fxml");
+            if (controller != null && currentUser != null) controller.setUser(currentUser);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleAskQuestion() {
+        // Already here
+    }
+
+    @FXML
+    private void handleAllQuestions() {
+        try {
+            Stage stage = (Stage) profileImageView.getScene().getWindow();
+            allQuestions_Controller controller = windowService.switchSceneAndGetController(stage, "/fxml/allQuestions.fxml");
+            if (controller != null && currentUser != null) controller.setUser(currentUser);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleBookmarks() {
+        try {
+            Stage stage = (Stage) profileImageView.getScene().getWindow();
+            bookmarks_Controller controller = windowService.switchSceneAndGetController(stage, "/fxml/bookmarks.fxml");
+            if (controller != null && currentUser != null) controller.setUser(currentUser);
+        } catch (Exception e) {
+            // TODO: replace with real logging
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleLogout() {
+        try {
+            sessionService.clear();
+            Stage stage = (Stage) profileImageView.getScene().getWindow();
+            windowService.switchScene(stage, "/fxml/welcome.fxml");
+        } catch (Exception e) {
+            // TODO: replace with real logging
             e.printStackTrace();
         }
     }
@@ -115,6 +174,7 @@ public class answerQuestion_Controller {
             }
             loadAnswers();
         } catch (Exception ex) {
+            // TODO: replace with real logging
             ex.printStackTrace();
             showAlert("Unable to send answer: " + ex.getMessage());
         }
@@ -147,6 +207,7 @@ public class answerQuestion_Controller {
             var answers = FXCollections.observableArrayList(answerDao.findByQuestion(currentQuestion.getId()));
             answersListView.setItems(answers);
         } catch (Exception ex) {
+            // TODO: replace with real logging
             ex.printStackTrace();
         }
     }
@@ -168,11 +229,10 @@ public class answerQuestion_Controller {
     }
 
     private void showAlert(String msg) {
-        Alert alert = new Alert(Alert.AlertType.ERROR, msg);
-        alert.showAndWait();
+        // Alerts removed entirely; intentionally no-op
     }
 
-    private class AnswerCell extends javafx.scene.control.ListCell<Answer> {
+    private static class AnswerCell extends javafx.scene.control.ListCell<Answer> {
         @Override
         protected void updateItem(Answer a, boolean empty) {
             super.updateItem(a, empty);

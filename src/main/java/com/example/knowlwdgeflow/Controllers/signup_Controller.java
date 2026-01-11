@@ -2,6 +2,7 @@ package com.example.knowlwdgeflow.Controllers;
 
 import com.example.knowlwdgeflow.model.User;
 import com.example.knowlwdgeflow.service.AuthService;
+import com.example.knowlwdgeflow.service.WindowService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -29,6 +30,7 @@ public class signup_Controller {
     private Label errorLabel;
 
     private final AuthService authService = new AuthService();
+    private final WindowService windowService = new WindowService();
 
     @FXML
     public void initialize() {
@@ -47,13 +49,11 @@ public class signup_Controller {
 
     private void openMainProfile(User user) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/mainProfile.fxml"));
-            Parent root = loader.load();
-            mainProfile_Controller controller = loader.getController();
-            controller.setUser(user);
             Stage stage = (Stage) signupButton.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
+            mainProfile_Controller controller = windowService.switchSceneAndGetController(stage, "/fxml/mainProfile.fxml");
+            if (controller != null) {
+                controller.setUser(user);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
             errorLabel.setText("Unable to load profile: " + ex.getMessage());

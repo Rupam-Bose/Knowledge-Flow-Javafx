@@ -8,11 +8,9 @@ import com.example.knowlwdgeflow.model.Comment;
 import com.example.knowlwdgeflow.service.LikeState;
 import com.example.knowlwdgeflow.service.SessionService;
 import com.example.knowlwdgeflow.service.BookmarkState;
+import com.example.knowlwdgeflow.service.WindowService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -72,12 +70,14 @@ public class fullBlog_Controller {
     private ScrollPane rootScroll;
 
     private Blog blog;
+    private User currentUser; // track logged-in user for menu navigation
 
     private final SessionService sessionService = new SessionService();
     private final UserDao userDao = new UserDao();
     private final CommentDao commentDao = new CommentDao();
     private final LikeState likeState = LikeState.getInstance();
     private final BookmarkState bookmarkState = BookmarkState.getInstance();
+    private final WindowService windowService = new WindowService();
     private final Runnable likeListener = this::refreshLikeUi;
     private final Runnable bookmarkListener = this::refreshBookmarkUi;
 
@@ -86,8 +86,8 @@ public class fullBlog_Controller {
         if (profileImageView != null) {
             profileImageView.setCursor(Cursor.HAND);
             profileImageView.setClip(clip);
-            profileImageView.fitWidthProperty().addListener((obs, oldV, newV) -> updateClip());
-            profileImageView.fitHeightProperty().addListener((obs, oldV, newV) -> updateClip());
+            profileImageView.fitWidthProperty().addListener((o1, o2, o3) -> updateClip());
+            profileImageView.fitHeightProperty().addListener((o1, o2, o3) -> updateClip());
             updateClip();
             profileImageView.setOnMouseClicked(e -> openProfile());
             loadProfileAvatar();
@@ -110,12 +110,14 @@ public class fullBlog_Controller {
     }
 
     private void updateClip() {
+        if (profileImageView == null) return;
         clip.setCenterX(profileImageView.getFitWidth() / 2);
         clip.setCenterY(profileImageView.getFitHeight() / 2);
         clip.setRadius(Math.min(profileImageView.getFitWidth(), profileImageView.getFitHeight()) / 2);
     }
 
     private void updateAuthorClip() {
+        if (authorImageView == null) return;
         authorClip.setCenterX(authorImageView.getFitWidth() / 2);
         authorClip.setCenterY(authorImageView.getFitHeight() / 2);
         authorClip.setRadius(Math.min(authorImageView.getFitWidth(), authorImageView.getFitHeight()) / 2);
@@ -123,6 +125,13 @@ public class fullBlog_Controller {
 
     public void setBlog(Blog blog) {
         this.blog = blog;
+        // keep current user from session for menu actions
+        Integer uid = sessionService.getSavedUserId();
+        if (uid != null) {
+            try {
+                this.currentUser = userDao.findById(uid);
+            } catch (Exception ignored) {}
+        }
         renderBlog();
         if (rootScroll != null) rootScroll.setVvalue(0);
     }
@@ -181,20 +190,17 @@ public class fullBlog_Controller {
         }
     }
 
+    @FXML
     private void openProfile() {
         try {
             Integer userId = sessionService.getSavedUserId();
             User user = userId != null ? userDao.findById(userId) : null;
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/mainProfile.fxml"));
-            Parent root = loader.load();
-            var controller = loader.getController();
-            if (controller instanceof mainProfile_Controller profileController && user != null) {
-                profileController.setUser(user);
-            }
             Stage stage = (Stage) profileImageView.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
+            mainProfile_Controller controller = windowService.switchSceneAndGetController(stage, "/fxml/mainProfile.fxml");
+            if (controller != null && user != null) {
+                controller.setUser(user);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -271,6 +277,71 @@ public class fullBlog_Controller {
     @FXML
     private void handleProfileClick() {
         openProfile();
+    }
+
+    @FXML
+    private void handleHome() {
+        try {
+            Stage stage = (Stage) rootScroll.getScene().getWindow();
+            windowService.switchScene(stage, "/fxml/Home.fxml");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleWritingBlog() {
+        try {
+            Stage stage = (Stage) rootScroll.getScene().getWindow();
+            writingBlog_Controller controller = windowService.switchSceneAndGetController(stage, "/fxml/writingBlog.fxml");
+            if (controller != null && currentUser != null) controller.setUser(currentUser);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleAskQuestion() {
+        try {
+            Stage stage = (Stage) rootScroll.getScene().getWindow();
+            askQuestion_Controller controller = windowService.switchSceneAndGetController(stage, "/fxml/askQuestion.fxml");
+            if (controller != null && currentUser != null) controller.setUser(currentUser);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleAllQuestions() {
+        try {
+            Stage stage = (Stage) rootScroll.getScene().getWindow();
+            allQuestions_Controller controller = windowService.switchSceneAndGetController(stage, "/fxml/allQuestions.fxml");
+            if (controller != null && currentUser != null) controller.setUser(currentUser);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleBookmarks() {
+        try {
+            Stage stage = (Stage) rootScroll.getScene().getWindow();
+            bookmarks_Controller controller = windowService.switchSceneAndGetController(stage, "/fxml/bookmarks.fxml");
+            if (controller != null && currentUser != null) controller.setUser(currentUser);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleLogout() {
+        try {
+            sessionService.clear();
+            Stage stage = (Stage) rootScroll.getScene().getWindow();
+            windowService.switchScene(stage, "/fxml/welcome.fxml");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private class CommentCell extends ListCell<Comment> {

@@ -3,11 +3,12 @@ package com.example.knowlwdgeflow.Controllers;
 import com.example.knowlwdgeflow.dao.QuestionDao;
 import com.example.knowlwdgeflow.model.Question;
 import com.example.knowlwdgeflow.model.User;
+import com.example.knowlwdgeflow.service.WindowService;
+import com.example.knowlwdgeflow.service.SessionService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -35,6 +36,8 @@ public class askQuestion_Controller {
 
     private User currentUser;
     private final QuestionDao questionDao = new QuestionDao();
+    private final WindowService windowService = new WindowService();
+    private final SessionService sessionService = new SessionService();
 
     @FXML
     public void initialize() {
@@ -59,17 +62,7 @@ public class askQuestion_Controller {
 
     @FXML
     private void handleProfileClick() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/mainProfile.fxml"));
-            Parent root = loader.load();
-            mainProfile_Controller controller = loader.getController();
-            controller.setUser(currentUser);
-            Stage stage = (Stage) profileImageView.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        openProfile();
     }
 
     private void loadQuestionImage() {
@@ -120,23 +113,90 @@ public class askQuestion_Controller {
         }
     }
 
+    private void openProfile() {
+        try {
+            Stage stage = (Stage) profileImageView.getScene().getWindow();
+            mainProfile_Controller controller = windowService.switchSceneAndGetController(stage, "/fxml/mainProfile.fxml");
+            if (controller != null) {
+                controller.setUser(currentUser);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void openAllQuestions() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/allQuestions.fxml"));
-            Parent root = loader.load();
-            allQuestions_Controller controller = loader.getController();
-            controller.setUser(currentUser);
             Stage stage = (Stage) askNowButton.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            showAlert("Unable to open All Questions: " + ex.getMessage());
+            allQuestions_Controller controller = windowService.switchSceneAndGetController(stage, "/fxml/allQuestions.fxml");
+            if (controller != null) {
+                controller.setUser(currentUser);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     private void showAlert(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR, message);
-        alert.showAndWait();
+        // Alerts removed entirely; intentionally no-op
+    }
+
+    @FXML
+    private void handleHome() {
+        try {
+            Stage stage = (Stage) rootPane.getScene().getWindow();
+            windowService.switchScene(stage, "/fxml/Home.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleWritingBlog() {
+        try {
+            Stage stage = (Stage) rootPane.getScene().getWindow();
+            writingBlog_Controller controller = windowService.switchSceneAndGetController(stage, "/fxml/writingBlog.fxml");
+            if (controller != null && currentUser != null) controller.setUser(currentUser);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleAskQuestion() {
+        // Already here
+    }
+
+    @FXML
+    private void handleAllQuestions() {
+        try {
+            Stage stage = (Stage) rootPane.getScene().getWindow();
+            allQuestions_Controller controller = windowService.switchSceneAndGetController(stage, "/fxml/allQuestions.fxml");
+            if (controller != null && currentUser != null) controller.setUser(currentUser);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleBookmarks() {
+        try {
+            Stage stage = (Stage) rootPane.getScene().getWindow();
+            bookmarks_Controller controller = windowService.switchSceneAndGetController(stage, "/fxml/bookmarks.fxml");
+            if (controller != null && currentUser != null) controller.setUser(currentUser);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleLogout() {
+        try {
+            sessionService.clear();
+            Stage stage = (Stage) rootPane.getScene().getWindow();
+            windowService.switchScene(stage, "/fxml/welcome.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
